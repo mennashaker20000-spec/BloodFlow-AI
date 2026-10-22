@@ -1,0 +1,21 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("blood_data.csv", parse_dates=["date"])
+
+# فصيلة O+ بس
+o_pos = df[df["blood_type"] == "O+"].copy()
+
+# متوسط متحرك 7 أيام (بيهدّي التذبذب)
+o_pos["avg_7_days"] = o_pos["units_consumed"].rolling(7).mean()
+
+plt.figure(figsize=(12, 5))
+plt.plot(o_pos["date"], o_pos["units_consumed"],
+         alpha=0.4, label="Daily")
+plt.plot(o_pos["date"], o_pos["avg_7_days"],
+         color="red", linewidth=2, label="7-day average")
+plt.title("O+ blood consumption")
+plt.xlabel("Date")
+plt.ylabel("Units consumed")
+plt.legend()
+plt.show()
